@@ -1,0 +1,19 @@
+{
+  "name": "angular-element-query",
+  "version": "0.0.1",
+  "authors": [
+    "benjaminapetersen <admin@benjaminapetersen.me>"
+  ],
+  "description": "A directive providing an api to other directives for knowing when the bounding box (parent) changes size",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "angular": "~1.4.1"
+  }
+}
