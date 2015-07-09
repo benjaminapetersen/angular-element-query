@@ -1,0 +1,72 @@
+/* make the object ugly so we can see it in DOM
+object {
+  background-color: #DFFDE1;
+  outline: 2px dashed #009900;
+} */
+html,
+body {
+
+}
+
+/* typography
+ -------------------------------- */
+.text-white {
+  color: #fff;
+}
+.text-black {
+  color: #000;
+}
+.text-gray-dk {
+  color: #272727;
+}
+.font-roboto {
+  font-family: 'Roboto','Helvetica','Arial',sans-serif !important;
+}
+
+/* backgrounds
+ -------------------------------- */
+.bg-white {
+  background-color: #fff;
+}
+.bg-black {
+  background-color: #000;
+}
+.bg-gray-lt {
+  background-color: #f9f9f9;
+}
+
+/* shadows
+ -------------------------------- */
+.shadow-sm {
+  box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.2);
+}
+.shadow-md {
+  box-shadow: 0px 0px 8px 2px rgba(0,0,0,0.3);
+}
+.shadow-bottom-sm {
+  box-shadow: 0px 2px 5px 1px rgba(0,0,0,0.2);
+}
+
+/* padding
+ -------------------------------- */
+.pad-sm {
+  padding: 2px 6px;
+}
+.pad-md {
+  padding: 6px 18px;
+}
+.pad-lg {
+  padding: 12px 36px;
+}
+
+/* margin
+ -------------------------------- */
+.mar-sm {
+  margin: 2px 6px;
+}
+.mar-md {
+  margin: 6px 18px;
+}
+.mar-lg {
+  margin: 12px 36px;
+}

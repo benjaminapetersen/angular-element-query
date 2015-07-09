@@ -1,0 +1,66 @@
+<html ng-app="myapp">
+<head>
+  <!-- google fonts -->
+  <link href='https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en' rel='stylesheet' type='text/css'>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <!-- layout engine -->
+  <link rel="stylesheet" href="../bower_components/layout.attrs/dist/layout.attrs.css" />
+  <!-- theme -->
+  <link rel="stylesheet" href="./style.css" />
+  <style>
+    [outline] {
+      outline: 0px solid #fff; /* override */
+    }
+  </style>
+</head>
+<body fit height-max class="bg-gray-lt font-roboto text-gray-dk">
+
+ <div layout column outline fit>
+  <div layout axis="center center" outline class="bg-white shadow-bottom-sm pad-lg">
+    <strong>Element Query + Layout Attrs</strong>
+  </div>
+  <div flex layout row mobile="column" outline>
+    <div flex shrink="3" outline>
+      <ul>
+        <li>foo</li>
+        <li>bar</li>
+        <li>baz</li>
+      </ul>
+    </div>
+    <div flex layout column grow="5" outline>
+      <!-- my-fancy-directive expects an element-query directive -->
+      <div
+          flex
+          my-fancy-directive
+          element-query="sm:200 md:400 lg:600 xl:800"
+          class="mar-lg shadow-sm bg-white pad-md"></div>
+    </div>
+    <div flex conceal="mobile tablet" outline>
+      <p>Hidden for mobile &amp; tablet</p>
+      <ul>
+        <li>foo</li>
+        <li>bar</li>
+        <li>baz</li>
+      </ul>
+    </div>
+  </div>
+  <div layout axis="center center" outline class="bg-white shadow-sm pad-lg">stuff and things</div>
+ </div>
+
+
+<!-- vendor -->
+<script src="../bower_components/angular/angular.js"></script>
+
+<!-- element query scripts
+<script src="../src/resize-listener.js"></script>
+<script src="../src/element-query.js"></script>
+<script src="../src/element-query-utils.js"></script>
+<script src="../src/element-query-resize-listener.js"></script>
+-->
+<script src="../dist/element-query.min.js"></script>
+
+<!-- demo -->
+<script src="./myapp.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<div>
+
+  <div ng-if="breakpoint === 'sm'">
+    <div>{{breakpoint}} version</div>
+    <div layout column outline>
+      This is the {{breakpoint}} version.
+    </div>
+    <div ng-transclude outline>
+      <!-- where extra stuff goes -->
+    </div>
+  </div>
+
+  <div ng-if="breakpoint === 'md'">
+    <div layout column outline>
+      <div flex outline>A</div>
+      <div flex outline>{{breakpoint}} version</div>
+      <div flex outline>B</div>
+      <div flex layout row outline>
+        <div outline>1</div>
+        <div flex ng-transclude outline>
+          <!-- where extra stuff goes -->
+        </div>
+        <div flex outline>3</div>
+      </div>
+    </div>
+  </div>
+
+  <div ng-if="breakpoint === 'lg'">
+    <div layout row outline>
+      <div flex outline>1</div>
+      <div flex layout column outline>
+        <div flex outline>4</div>
+        <div flex outline>{{breakpoint}} version</div>
+        <div flex outline>6</div>
+      </div>
+      <div flex ng-transclude outline>
+        <!-- where extra stuff goes -->
+      </div>
+    </div>
+  </div>
+
+
+  <div ng-if="breakpoint === 'xl'">
+    <div layout row outline>
+      <div outline>Left {{breakpoint}} version</div>
+      <div flex ng-transclude outline>
+        <!-- where extra stuff goes -->
+      </div>
+      <div outline>Right</div>
+    </div>
+    <div layout row outline>
+      <div flex outline>Left</div>
+      <div outline>Center</div>
+      <div flex outline>Right</div>
+    </div>
+  </div>
+
+</div>

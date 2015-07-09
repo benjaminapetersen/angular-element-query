@@ -1,0 +1,78 @@
+<html ng-app="myapp">
+<head>
+  <link rel="stylesheet" href="../bower_components/layout.attrs/dist/layout.attrs.css" />
+  <style>
+    /* make the object ugly so we can see it in DOM
+    object {
+      background-color: #DFFDE1;
+      outline: 2px dashed #009900;
+    } */
+  </style>
+</head>
+<body>
+
+  <div ng-controller="repeaterController">
+
+    <div
+      ng-repeat="item in items"
+      layout row mobile="column" outline>
+      <div flex outline>
+        <!--
+          first instance
+          - works fine on raw divs
+        -->
+        <div
+            element-query="sm:200 md:400 lg:600 xl:800"
+            outline>Plain Div</div>
+
+      </div>
+      <div flex grow="2" shrink="2" outline>
+        <!--
+          second instance
+          - works fine with directives as attributes
+        -->
+        <div
+          foo
+          element-query="sm:200 md:400 lg:600 xl:800"
+          outline>
+          <div>Div w/Foo Directive</div>
+          <div>This is where Transclude goes.</div>
+        </div>
+        <!--
+          third instance
+          - does not work on custom element directives
+        -->
+        <foo
+            element-query="sm:200 md:400 lg:600:default xl:800"
+            outline>Foo Element (Directive) <strong>FAILS</strong></foo>
+
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- experiment w/adding elementQuery through a service to
+       bar instead of through a directive.  not desirable.
+  <div bar>
+      Bar Directive
+  </div>
+  -->
+
+
+
+  <!--
+  <foo-element
+    element-query
+    element-breakpoints="sm:50 md:200 lg:400:default xl:800"
+      outline>renamed element (not functional)</div>
+  -->
+
+<script src="../bower_components/angular/angular.js"></script>
+<script src="../bower_components/lodash/lodash.js"></script>
+<script src="../src/resize-listener.js"></script>
+<script src="../src/element-query.js"></script>
+<script src="../src/element-query-utils.js"></script>
+<script src="./myapp.js"></script>
+</body>
+</html>

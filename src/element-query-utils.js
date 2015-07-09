@@ -8,8 +8,13 @@ angular.module('element-query')
 
    var unbind = Function.prototype.bind.bind(Function.prototype.call),
       // strings
+      toString = unbind(Object.prototype.toString),
+      isString = function(obj) {
+        return toString(obj) === '[object String]';
+      },
       split = unbind(String.prototype.split),
       // arrays
+      slice = unbind(Array.prototype.slice),
       empty = function(arr) {
           return !(arr.length > 0);
       },
@@ -56,6 +61,33 @@ angular.module('element-query')
           });
           return found;
       },
+      hasProp = Function.prototype.call.bind(Object.prototype.hasOwnProperty),
+      // get an object's keys
+      objKeys = function(obj) {
+          var result = [],
+              prop;
+          for(prop in obj) {
+              if(hasProp(obj, prop)) {
+                  result.push(prop);
+              }
+          }
+          return result;
+      },
+      // own properties of an object
+      forOwn = function(obj, fn) {
+        var keys = objKeys(obj);
+        each(keys, function(key) {
+            fn(obj[key], key, obj);
+        });
+      },
+      delay = function() {
+        var fn = arguments[0],
+            timeout = arguments[1] || 1,
+            args = slice(arguments, 2);
+        setTimeout(function() {
+          fn(args);
+        }, timeout);
+      },
       outerWidth = function(el) {
         var width = el.offsetWidth;
         var style = getComputedStyle(el);
@@ -74,12 +106,18 @@ angular.module('element-query')
 
     return {
       unbind: unbind,
+      // strings
       split: split,
+      toString: toString,
+      isString: isString,
+      // arrays
       empty: empty,
       each: each,
       every: every,
       reduce: reduce,
       find: find,
+      forOwn: forOwn,
+      delay: delay,
       outerWidth: outerWidth,
       outerHeight: outerHeight
     }
