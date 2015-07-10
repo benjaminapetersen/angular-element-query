@@ -70,3 +70,18 @@ body {
 .mar-lg {
   margin: 12px 36px;
 }
+
+/* margin
+ -------------------------------- */
+.widget-sm {
+  background-color: #990000;
+}
+.widget-md {
+  background-color: #009900;
+}
+.widget-lg {
+  background-color: #000099;
+}
+.widget-xl {
+  background-color: #990099;
+}

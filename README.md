@@ -1,22 +1,197 @@
 # angular-element-query
-An angular directive that assists in helping other directives know about changes in the size of their bounding box (parent)
-
+An angular directive that assists other directives by notifying them of resize events on the immediate
+DOM node. This allows the DOM node to be the event proxy rather than the window.
 
 ## Concept
 
-The goal of angular-element-query is to make a directive that will tell other directives about
-resize changes on their parent element rather than browser resize changes.  The idea is to make
-smarter, more composable elements.
+The purpose of `element-query` is to be a directive that will notify other directives about
+resize changes on the immediate DOM node rather than relying on window resize.  This allows for
+the creation of context aware components.  Media queries are a proxy, and knowing only about size
+changes on the browser window is not ideal.  An example: What if an event causes your
+layout to change from a 2 column layout into a 3 column layout?  Each column will need to adjust in
+size, and all children will have to deal with the effects.  Using media queries to restyle the elements
+is messy in this case, you now have CSS in terms of the browser window **but really** in terms of the
+column width changes. `element-query` aims to help reduce that complexity by providing flexibility.
 
-This is definitely in a prototype stage, so will break often.
+## Usage
+
+Include the `<script src="/path/to/element-query.js></script>` or minified version
+`<script src="/path/to/element-query.min.js></script>` in your page.
 
 ## Example code:
 
-The directive name itself `element-query` is likely to change.  The attribute to configure it `breakpoints`
-will probably change as well, as these should match.  Conceptually, the idea is to let element-query
-be configured to watch certain breakpoints in sizes on the parent (NOT the browser window) and notify
-the other directive, allowing that directive to make template/view updates.
+The directive is named `element-query` and must be used as an attribute and a sibling to another directive.
+Configure breakpoints on `element-query` by passing it a string of key-value pairs.  You may use anything
+for the key, but the values must be numbers representing pixel widths that are of interest.  An example:
+`element-query="sm:200 md:400 lg:600 xl:800"`.  Here I've named 4 'sizes' and set the pixels definitions
+to 200,400,600 and 800.
 
+`element-query` is now ready to talk to your directive, but you need to tell your directive to listen.
+This is done by requiring the `elementQuery` controller in your directive's linking function.
+
+### The Linking Function
+
+The simplest version is to call `elementQuery.subscribe($scope)`, passing it your `$scope`.
+
+```javascript
+.directive('myFancyDirective', function() {
+  return {
+    restrict: 'A',
+    scope: true,
+    // require your own controller & elementQuery
+    require: ['myFancyDirective', 'elementQuery'],
+    // $require is now an array of the required controllers
+    link: function($scope, $elem, $attrs, $require) {
+      var myCtrl = $require[0],
+          elementQuery = $require[1];
+      // This will now set a var on your $scope when resize events on this DOM node happen
+      elementQuery.subscribe($scope);
+    }
+```
+For greater flexibility, you can pass subscribe a callback function:
+
+```javascript
+.directive('myFancyDirective', function() {
+  return {
+    restrict: 'A',
+    scope: true,
+    require: ['myFancyDirective', 'elementQuery'],
+    link: function($scope, $elem, $attrs, $require) {
+      var myCtrl = $require[0],
+          elementQuery = $require[1];
+      // Do other fancy things in this callback function....
+      elementQuery.subscribe('widths', function(name, val, actual) {
+        $scope.$apply(function() {
+          $scope.breakpoint = name;
+        });
+      });
+    }
+```
+When passing the `$scope` alone, `$scope.breakpoint` will be set to the `key` configured whenever
+a resize `change` matches the px value provided.  It is important to note that events are only
+fired on a `change`.   When passing the callback function, you can configure the variable or do
+any other interesting thing you can think of.  More examples to follow.
+
+### The Template
+
+Now, in your directive template, you can do a number of things with the information passed.  Simplest
+is simply to update a class:
+
+```html
+<!--
+  myFancyDirective template
+  - {{breakpoint}} will be set to sm, md, lg, xl based on events.
+-->
+<div class="widget widget-{{breakpoint}}">
+   <!-- other things... -->
+</div>
+```
+This allows you to use css as normal to restyle (no media queries needed!):
+
+```css
+/* default styles */
+.widget {
+  background-color: #090909;
+}
+/* style for 200-400px */
+.widget-sm {
+  background-color: #990000;
+}
+/* style for 400-600px */
+.widget-md {
+  background-color: #009900;
+}
+/* style for 600-800px */
+.widget-lg {
+  background-color: #000099;
+}
+/* style for 800px + */
+.widget-xl {
+  background-color: #990099;
+}
+```
+Or, you could change the entire contents of the directive by generating new DOM:
+
+```html
+<div class="widget-{{breakpoint}}">
+
+  <div ng-if="breakpoint === 'sm'">
+    is: {{breakpoint}} - sm
+  </div>
+
+
+  <div ng-if="breakpoint === 'md'">
+    is: {{breakpoint}} - md
+  </div>
+
+
+  <div ng-if="breakpoint === 'lg'">
+    is: {{breakpoint}} - lg
+  </div>
+
+
+  <div ng-if="breakpoint === 'xl'">
+    is: {{breakpoint}} - xl
+  </div>
+</div>
+```
+
+### Other Possibilities
+
+Perhaps a large number of items need to be updated but you are concerned about the performance impact.
+Put `element-query` on the immediate parent node and let it broadcast events.  It will be the
+proxy instead of the window:
+
+```javascript
+// change the linking function
+link: function($scope, $elem, $attrs, $require) {
+      var myCtrl = $require[0],
+          elementQuery = $require[1];
+
+      elementQuery.subscribe('widths', function(name, val, actual) {
+
+        $scope.$emit('resizeWidths', {
+          breakpoint: name,
+          size: val,
+          actualDivWidth: actual
+        });
+
+      });
+    }
+```
+
+To use `$rootScope.$broadcast`, you would need to update your directive's controller to ask for
+`$rootScope` via dependency injection, then provide a function from the controller to the linking function.
+
+```javascript
+// still myFancyDirective
+controller: [
+  '$rootScope',
+  function($rootScope) {
+    this.eventer = function(name, val, actual) {
+      // name the event something meaningful
+      $rootScope.$broadcast('myFancyDirective:resize', {
+        breakpoint: name,
+        size: val,
+        actualDivWidth: actual
+      });
+    }
+  }]
+// then let your linking function use the above function:
+require: ['myFancyDirective', 'elementQuery'],
+link: function($scope, $element, $attrs, $require) {
+  var myFancyCtrl = $require[0],
+    elementQuery = $require[1];
+
+  elementQuery.subscribe('widths', function(name, val, actual) {
+    // delegate to the controller function to do the work here,
+    // allowing other directives to listen & change their own classes or
+    // update their DOM.
+    myFancyCtrl.eventer(name, val, actual);
+  });
+}
+
+```
 
 ## Gotchas!
 
@@ -24,9 +199,7 @@ the other directive, allowing that directive to make template/view updates.
 
 The `<foo>` element does not register properly with the resize listener and does not work.  However
 the `<div foo>` element does.  So directives set to `restrict: 'A'` are fine, but `restrict: 'E'`
-are not.  This seems to be a bit of a deal breaker, so completing the breakpoint broadcast component
-is on hold until the actual query mechanism is worked out.
-
+are not.  This is not ideal, and an open issue.
 
 ```html
 
@@ -57,9 +230,9 @@ is on hold until the actual query mechanism is worked out.
 ### How does it work?
 
 The `element-query` directive takes a string of breakpoint definitions.  These are arbitrary key value
-pairs, but every time there is a change in a matched query, element-query will fire an event with
-`key, value, currentWidth` as three arguments.  Your directive only needs to call the `elementQuery.subscribe($scope)`
-method to receive this information (there are two ways to subscribe, more on that to come).
+pairs, but every time there is a change in a matched query, `elementQuery` will fire an event with
+`key, value, currentWidth` as three arguments.  Your directive only needs to call the
+`elementQuery.subscribe($scope)` method to receive this information (or provide a callback, see example above).
 
 The actual mechanism for listening for size change events on the element requires a small amount of DOM
 manipulation.  An `<object>` tag is injected into your element, which is a special kind of tag that can
@@ -77,6 +250,13 @@ the [performance considerations around element queries](http://www.backalleycode
 
 
 <!--
+- TODO: allow a custom name on the short registry version.... 'breakpoint' can
+  be a fallback, but a user may want to change this.
+
+- examples:
+  - adding classes:  "widget widget-small widget-medium widget-large"
+  - changing entire DOM structure
+
 - describe how it works.
 
 - Show that element-query isn't listening to window events by updating the parent div width arbitrarily. ESSENTIAL!!
