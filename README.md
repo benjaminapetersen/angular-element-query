@@ -18,6 +18,13 @@ column width changes. `element-query` aims to help reduce that complexity by pro
 Include the `<script src="/path/to/element-query.js></script>` or minified version
 `<script src="/path/to/element-query.min.js></script>` in your page.
 
+## Demo
+
+There is a `/demo` directory included in the repo.  Pull the code, `cd /path/to/angular-element-query/`,
+`npm install`, `bower install`, then `pyton -m SimpleHTTPServer` and navigate to `localhost:8000/demo`
+in your browser.  This demo makes use of [layout.attrs](https://github.com/benjaminapetersen/layout.attrs)
+for some simple flexbox layout CSS.  There are no actual dependencies for `angular-element-query`.
+
 ## Example code:
 
 The directive is named `element-query` and must be used as an attribute and a sibling to another directive.
