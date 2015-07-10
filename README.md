@@ -69,8 +69,8 @@ For greater flexibility, you can pass subscribe a callback function:
 ```
 When passing the `$scope` alone, `$scope.breakpoint` will be set to the `key` configured whenever
 a resize `change` matches the px value provided.  It is important to note that events are only
-fired on a `change`.   When passing the callback function, you can configure the variable or do
-any other interesting thing you can think of.  More examples to follow.
+fired when the matching breakpoint changes.   When passing the callback function, you can configure
+the variable or do any other interesting thing you can think of.  More examples to follow.
 
 ### The Template
 
