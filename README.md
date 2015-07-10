@@ -143,6 +143,13 @@ Or, you could change the entire contents of the directive by generating new DOM:
 </div>
 ```
 
+Or simply use `ng-show` and `ng-hide`:
+
+```html
+<div ng-show="breakpoint === 'sm'">stuff to show in sm breakpont...</div>
+<div ng-hide="breakpoint === 'lg'">stuff to hide in lg breakpoint....</div>
+```
+
 ### Other Possibilities
 
 Perhaps a large number of items need to be updated but you are concerned about the performance impact.
