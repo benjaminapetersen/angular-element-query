@@ -74,14 +74,14 @@ body {
 /* margin
  -------------------------------- */
 .widget-sm {
-  background-color: #990000;
+  background-color: #E4ADE4;
 }
 .widget-md {
-  background-color: #009900;
+  background-color: #CCCCFF;
 }
 .widget-lg {
-  background-color: #000099;
+  background-color: #C1ECC1;
 }
 .widget-xl {
-  background-color: #990099;
+  background-color: #E8C4C4;
 }
